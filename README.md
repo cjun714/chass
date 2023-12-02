@@ -1,5 +1,5 @@
 chass
-=======
+=====
 
 Change .ass from any resolution to 1080P.
 
