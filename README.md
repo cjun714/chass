@@ -3,7 +3,7 @@ chass
 
 Change .ass from any resolution to 1080P.
 
-It reads .ass resolution, then modifys all `\pos(x,y)` in .ass file.
+It reads .ass resolution, then modifys all `\pos(x,y)` and `\move(x,y,x,y)` in .ass file.
 
 ## How to Use
 
