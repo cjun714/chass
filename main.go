@@ -71,11 +71,19 @@ func main() {
 }
 
 func processLine(line string, xRatio, yRatio float32) string {
-	idx := strings.Index(line, "\\pos(")
-
-	if idx == -1 { // no "\pos()"
-		return line
+	if strings.Contains(line, "\\pos(") {
+		return processPos(line, xRatio, yRatio)
 	}
+
+	if strings.Contains(line, "\\move(") {
+		return processMove(line, xRatio, yRatio)
+	}
+
+	return line
+}
+
+func processPos(line string, xRatio, yRatio float32) string {
+	idx := strings.Index(line, "\\pos(")
 
 	subStr := line[idx:]
 
@@ -84,15 +92,37 @@ func processLine(line string, xRatio, yRatio float32) string {
 		return line
 	}
 
-	posStr := subStr[0 : idx+1] // should be "\pos(xxx,yyy)"
+	str := subStr[0 : idx+1] // should be "\pos(xxx,yyy)"
 
 	var x, y float32
-	fmt.Sscanf(posStr, "\\pos(%f,%f)", &x, &y)
+	fmt.Sscanf(str, "\\pos(%f,%f)", &x, &y)
 
-	x = x * xRatio
-	y = y * yRatio
+	x, y = x*xRatio, y*yRatio
 
-	newPosStr := "\\pos(" + strconv.Itoa(int(x)) + "," + strconv.Itoa(int(y)) + ")"
+	newStr := "\\pos(" + strconv.Itoa(int(x)) + "," + strconv.Itoa(int(y)) + ")"
 
-	return strings.Replace(line, posStr, newPosStr, 1)
+	return strings.Replace(line, str, newStr, 1)
+}
+
+func processMove(line string, xRatio, yRatio float32) string {
+	idx := strings.Index(line, "\\move(")
+
+	subStr := line[idx:]
+
+	idx = strings.IndexByte(subStr, ')')
+	if idx == -1 { // if no "\move()"
+		return line
+	}
+
+	str := subStr[0 : idx+1] // should be "\move(x0,y0,x1,y1)"
+
+	var x0, y0, x1, y1 float32
+	fmt.Sscanf(str, "\\move(%f,%f,%f,%f)", &x0, &y0, &x1, &y1)
+
+	x0, y0 = x0*xRatio, y0*yRatio
+	x1, y1 = x1*xRatio, y1*yRatio
+
+	newStr := "\\move(" + strconv.Itoa(int(x0)) + "," + strconv.Itoa(int(y0)) + "," + strconv.Itoa(int(x1)) + "," + strconv.Itoa(int(y1)) + ")"
+
+	return strings.Replace(line, str, newStr, 1)
 }
