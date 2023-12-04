@@ -86,13 +86,13 @@ func processLine(line string, xRatio, yRatio float32) string {
 
 	posStr := subStr[0 : idx+1] // should be "\pos(xxx,yyy)"
 
-	var x, y int
-	fmt.Sscanf(posStr, "\\pos(%d,%d)", &x, &y)
+	var x, y float32
+	fmt.Sscanf(posStr, "\\pos(%f,%f)", &x, &y)
 
-	x = int(float32(x) * xRatio)
-	y = int(float32(y) * yRatio)
+	x = x * xRatio
+	y = y * yRatio
 
-	newPosStr := "\\pos(" + strconv.Itoa(x) + "," + strconv.Itoa(y) + ")"
+	newPosStr := "\\pos(" + strconv.Itoa(int(x)) + "," + strconv.Itoa(int(y)) + ")"
 
 	return strings.Replace(line, posStr, newPosStr, 1)
 }
